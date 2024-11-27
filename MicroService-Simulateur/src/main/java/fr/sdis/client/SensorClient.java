@@ -9,6 +9,8 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @ApplicationScoped
 @RegisterRestClient(configKey = "sim-api")
 public interface SensorClient {
+
+    @Path("/data")
     @GET
     String getSensorData();
 }
