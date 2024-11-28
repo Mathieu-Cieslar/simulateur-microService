@@ -8,5 +8,8 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class CaserneDTO {
-    private String name;
+    private String id;
+    private Integer coordX;
+    private Integer coordY;
+    private Integer nbPompiers;
 }
