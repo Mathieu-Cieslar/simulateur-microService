@@ -1,7 +1,9 @@
 package fr.sdis.microservicesimulateur.service;
 
 import fr.sdis.microservicesimulateur.model.Feu;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -42,21 +44,6 @@ public class CapteurService {
         double longitudesFeu = longitudeMIN + (longitudeMAX - longitudeMIN) * Math.random();
         int intensiteFeu = (int) (1 + Math.random() * 10);
         Feu feuRandom = new Feu(1, latitudesFeu, longitudesFeu, intensiteFeu, 0);
-
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-
-            //log.info("apiUrl : " + apiUrl);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            //log.info(response.body());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(feuRandom.toString());
     }
 }
