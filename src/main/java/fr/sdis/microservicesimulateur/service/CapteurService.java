@@ -1,6 +1,9 @@
 package fr.sdis.microservicesimulateur.service;
 
 import fr.sdis.microservicesimulateur.model.Feu;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +13,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
 
-
+@Slf4j
+@Service
 public class CapteurService {
 
     double latitudeMAX =45.85;
@@ -19,18 +23,9 @@ public class CapteurService {
     double longitudeMAX = 5.10;
 
     private Properties properties = new Properties();
-    private String apiUrl;
 
-    public CapteurService() {
-        try {
-            FileInputStream input = new FileInputStream("MicroService-Simulateur/src/config.properties");
-            properties.load(input);
-            apiUrl = properties.getProperty("api.url");
-            input.close();
-        } catch (IOException e) {
-            System.err.println("Erreur lors du chargement des configurations : " + e.getMessage());
-        }
-    }
+    @Value("${api.url}")
+    private String apiUrl;
 
 
     public static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -56,7 +51,7 @@ public class CapteurService {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            System.out.println("apiUrl : "+apiUrl);
+            log.info("apiUrl : "+apiUrl);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiUrl))
@@ -64,7 +59,7 @@ public class CapteurService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
+            log.info(response.body());
         } catch (Exception e) {
             e.printStackTrace();
         }
