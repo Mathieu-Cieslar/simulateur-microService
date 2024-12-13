@@ -3,23 +3,25 @@ package fr.sdis.microservicesimulateur.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.sdis.microservicesimulateur.model.*;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import fr.sdis.microservicesimulateur.client.*;
+
 @Service
 public class CapteurService {
+
+    private final CapteurClient capteurClient;
+
+    public CapteurService(CapteurClient capteurClient) {
+        this.capteurClient = capteurClient;
+    }
 
     double latitudeMAX = 45.85;
     double longitudeMIN = 4.70;
@@ -46,24 +48,15 @@ public class CapteurService {
     }
 
     public void createRandomCapteurs(){
+        //Création d'un feu avec des coordonnées aléatoires et une intensité aléatoire
         double latitudesFeu = latitudeMIN + (latitudeMAX - latitudeMIN) * Math.random();
         double longitudesFeu = longitudeMIN + (longitudeMAX - longitudeMIN) * Math.random();
         int intensiteFeu = (int) (1 + Math.random() * 10);
         Feu feuRandom = new Feu(1, latitudesFeu, longitudesFeu, intensiteFeu, 0);
-        System.out.println(feuRandom.toString());
-        RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.getForObject(apiUrl, String.class);
-        System.out.println(response);
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        List<Capteur> capteurs = null;
-        try {
-            // Désérialisation
-            capteurs = objectMapper.readValue(response, new TypeReference<List<Capteur>>() {});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<Capteur> capteurs = capteurClient.getCapteurs();
 
+        //On crée une liste de capteurs proches du feu
         List<Capteur> capteursProches = new ArrayList<>();
         for (Capteur capteur : capteurs) {
             //distance entre le capteur et le feu
@@ -107,15 +100,7 @@ public class CapteurService {
             System.out.println(capteur.toString());
         }
 
-        String json = null;
-        try{
-            json = objectMapper.writeValueAsString(capteurs);
-        }catch (JsonProcessingException e){
-            e.printStackTrace();
-        }
-        System.out.println(json);
-        restTemplate.put(apiUrl, json);
-        System.out.println("Capteurs updated");
+        capteurClient.setCapteurs(capteurs);
 
     }
 }

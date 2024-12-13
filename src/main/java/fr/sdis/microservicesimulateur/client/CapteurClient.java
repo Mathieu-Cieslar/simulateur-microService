@@ -1,15 +1,57 @@
 package fr.sdis.microservicesimulateur.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.sdis.microservicesimulateur.model.Capteur;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Component
+public class CapteurClient {
+    @Value("${api.url}/capteur")
+    private String apiUrl;
 
-@FeignClient(name = "capteur-client", url = "${api.url}")
-public interface CapteurClient {
+    private final RestTemplate restTemplate;
+    public CapteurClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-        @GetMapping("/getAllcapteurs")
-        List<Capteur> getAllcapteurs();
+    ObjectMapper objectMapper = new ObjectMapper();
+
+
+    public List<Capteur> getCapteurs() {
+        String reponse = null;
+        try{
+            reponse = restTemplate.getForObject(apiUrl, String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des capteurs", e);
+        }
+
+        try {
+            // Désérialisation
+            return objectMapper.readValue(reponse, new TypeReference<List<Capteur>>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la conversion en JSON", e);
+        }
+    }
+
+    public void setCapteurs(List<Capteur> capteurs) {
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(capteurs);
+            System.out.println("Update success");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Erreur lors de la conversion en JSON", e);
+        }
+
+        try{
+            restTemplate.put(apiUrl, json);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la mise à jour des capteurs", e);
+        }
+    }
 }
