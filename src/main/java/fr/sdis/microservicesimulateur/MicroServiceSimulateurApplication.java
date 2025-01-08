@@ -19,6 +19,7 @@ public class MicroServiceSimulateurApplication {
     public static void main(String[] args) {
         var context = SpringApplication.run(MicroServiceSimulateurApplication.class, args);
         CapteurService capteurService = context.getBean(CapteurService.class);
+        capteurService.createRandomCoordCapteurs();
         capteurService.createRandomCapteurs();
     }
 

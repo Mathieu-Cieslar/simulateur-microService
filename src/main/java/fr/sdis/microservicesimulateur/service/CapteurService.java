@@ -47,12 +47,25 @@ public class CapteurService {
         }
     }
 
+    public void createRandomCoordCapteurs(){
+        List<Capteur> capteurs = capteurClient.getCapteurs();
+        for (Capteur capteur : capteurs) {
+            double latitudes = latitudeMIN + (latitudeMAX - latitudeMIN) * Math.random();
+            double longitudes = longitudeMIN + (longitudeMAX - longitudeMIN) * Math.random();
+            capteur.setCoorX(latitudes);
+            capteur.setCoorY(longitudes);
+        }
+        capteurClient.setCapteurs(capteurs);
+    }
+
     public void createRandomCapteurs(){
         //Création d'un feu avec des coordonnées aléatoires et une intensité aléatoire
         double latitudesFeu = latitudeMIN + (latitudeMAX - latitudeMIN) * Math.random();
         double longitudesFeu = longitudeMIN + (longitudeMAX - longitudeMIN) * Math.random();
         int intensiteFeu = (int) (1 + Math.random() * 10);
         Feu feuRandom = new Feu(1, latitudesFeu, longitudesFeu, intensiteFeu, 0);
+
+        System.out.println(feuRandom);
 
         List<Capteur> capteurs = capteurClient.getCapteurs();
 
