@@ -3,10 +3,12 @@ package fr.sdis.microservicesimulateur.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.sdis.microservicesimulateur.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.sdis.microservicesimulateur.service.FeuService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +19,20 @@ import fr.sdis.microservicesimulateur.client.*;
 @Service
 public class CapteurService {
 
-    private final CapteurClient capteurClient;
+    @Value("${latitudeMAX}")
+    double latitudeMAX;
+    @Value("${longitudeMIN}")
+    double longitudeMIN;
+    @Value("${latitudeMIN}")
+    double latitudeMIN;
+    @Value("${longitudeMAX}")
+    double longitudeMAX;
 
-    public CapteurService(CapteurClient capteurClient) {
-        this.capteurClient = capteurClient;
-    }
+    @Autowired
+    FeuService feuService;
 
-    double latitudeMAX = 45.85;
-    double longitudeMIN = 4.70;
-    double latitudeMIN = 45.60;
-    double longitudeMAX = 5.10;
-
-    private Properties properties = new Properties();
+    @Autowired
+    CapteurClient capteurClient;
 
     @Value("${api.url}"+"capteur")
     private String apiUrl;
@@ -60,14 +64,17 @@ public class CapteurService {
 
     public void createRandomCapteurs(){
         //Création d'un feu avec des coordonnées aléatoires et une intensité aléatoire
-        double latitudesFeu = latitudeMIN + (latitudeMAX - latitudeMIN) * Math.random();
-        double longitudesFeu = longitudeMIN + (longitudeMAX - longitudeMIN) * Math.random();
-        int intensiteFeu = (int) (1 + Math.random() * 10);
-        Feu feuRandom = new Feu(1, latitudesFeu, longitudesFeu, intensiteFeu, 0);
+        Feu feuRandom = feuService.createRandomFeu();
 
         System.out.println(feuRandom);
 
         List<Capteur> capteurs = capteurClient.getCapteurs();
+
+        //structure avec un objet
+
+        //Créer une liste de capteurs avec la distance entre le feu et le capteurs
+
+
 
         //On crée une liste de capteurs proches du feu
         List<Capteur> capteursProches = new ArrayList<>();
