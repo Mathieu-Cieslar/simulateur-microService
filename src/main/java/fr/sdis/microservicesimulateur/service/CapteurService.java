@@ -70,6 +70,7 @@ public class CapteurService {
         //Recupération de la liste des feux
         List<Feu> feux = feuClient.getFeux();
 
+      // feux = feux.stream().filter(feu -> feu.isStatus()).collect(Collectors.toList());
 
         Feu feuRandom;
         //Création d'un feu avec des coordonnées aléatoires et une intensité aléatoire si la tailel de la liste feu est inferieur ou égal à 5
@@ -129,28 +130,28 @@ public class CapteurService {
                         System.out.println("Capteur : " + capteur + " Distance : " + distance);
                         capteur.setValeur(9);
                         capteursProches.add(capteur);
-                    } else if (distance < 5 & capteur.getValeur() < 8) {
+                    } else if (distance < 3.3 & capteur.getValeur() < 8) {
                         capteur.setValeur(8);
                         capteursProches.add(capteur);
-                    } else if (distance < 6 & capteur.getValeur() < 7) {
+                    } else if (distance < 3.6 & capteur.getValeur() < 7) {
                         capteur.setValeur(7);
                         capteursProches.add(capteur);
-                    } else if (distance < 7 & capteur.getValeur() < 6) {
+                    } else if (distance < 4 & capteur.getValeur() < 6) {
                         capteur.setValeur(6);
                         capteursProches.add(capteur);
-                    } else if (distance < 8 & capteur.getValeur() < 5) {
+                    } else if (distance < 4.3 & capteur.getValeur() < 5) {
                         capteur.setValeur(5);
                         capteursProches.add(capteur);
-                    } else if (distance < 9 & capteur.getValeur() < 4) {
+                    } else if (distance < 4.6 & capteur.getValeur() < 4) {
                         capteur.setValeur(4);
                         capteursProches.add(capteur);
-                    } else if (distance < 10 & capteur.getValeur() < 3) {
+                    } else if (distance < 5 & capteur.getValeur() < 3) {
                         capteur.setValeur(3);
                         capteursProches.add(capteur);
-                    } else if (distance < 11 & capteur.getValeur() < 2) {
+                    } else if (distance < 5.3 & capteur.getValeur() < 2) {
                         capteur.setValeur(2);
                         capteursProches.add(capteur);
-                    } else if (distance < 12 & capteur.getValeur() < 1) {
+                    } else if (distance < 5.6 & capteur.getValeur() < 1) {
                         capteur.setValeur(1);
                         capteursProches.add(capteur);
                     } else {
