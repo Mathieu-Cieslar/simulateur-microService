@@ -44,7 +44,9 @@ public class FeuService {
     }
 
     public void verifFeu(){
+        System.out.println("Vérification des feux");
         List<Feu> feux = feuClient.getFeux();
+        System.out.println("Feuuuux : " + feux);
         List<Intervention> interventions = interventionClient.getInterventionsActives();
         System.out.println("Feux : " + interventions);
         Date now = new Date();
@@ -67,7 +69,7 @@ public class FeuService {
             }
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(intervention.getDateIntervention());
-            calendar.add(Calendar.MILLISECOND, intervention.getTempsTrajet());
+            calendar.add(Calendar.MILLISECOND, intervention.getTempsTrajet()+10000);
             Date updatedDate = calendar.getTime();
             System.out.println("Date de fin d'intervention : " + updatedDate);
             System.out.println("Date actuelle : " + now);
