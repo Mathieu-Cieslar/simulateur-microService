@@ -89,7 +89,7 @@ public class CapteurService {
 
         List<Capteur> capteurs = capteurClient.getCapteurs();
 
-        if(feux.size()<1){
+        if(feux.getLast().isStatus()){
             for(Capteur capteur : capteurs){
                 capteur.setValeur(0);
             }
