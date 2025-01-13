@@ -43,7 +43,7 @@ public class CapteurClient {
         String json = null;
         try {
             json = objectMapper.writeValueAsString(capteurs);
-            System.out.println("Update success");
+            System.out.println(json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Erreur lors de la conversion en JSON", e);
         }

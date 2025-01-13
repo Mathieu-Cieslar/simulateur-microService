@@ -2,6 +2,9 @@ package fr.sdis.microservicesimulateur.model;
 
 import lombok.*;
 
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,6 +13,10 @@ import lombok.*;
 
 public class Intervention {
     private int id;
-    private Camion camion;
+    private List<Camion> camions;
     private Feu feu;
+    private Caserne caserne;
+    private List<Double[]> trajet;
+    private Integer tempsTrajet;
+    private Date dateIntervention;
 }

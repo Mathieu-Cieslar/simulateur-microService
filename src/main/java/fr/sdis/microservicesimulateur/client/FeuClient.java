@@ -17,6 +17,9 @@ public class FeuClient {
     @Value("${api.url}/feu")
     private String apiUrl;
 
+    @Value("${api.url2}/feu")
+    private String apiUrl2;
+
     private final RestTemplate restTemplate;
     public FeuClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -38,6 +41,39 @@ public class FeuClient {
             return objectMapper.readValue(reponse, new TypeReference<List<Feu>>() {});
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la conversion en JSON", e);
+        }
+    }
+
+    public List<Feu> getFeuxEmergency() {
+        String reponse = null;
+        try{
+            reponse = restTemplate.getForObject(apiUrl, String.class);
+            System.out.println(reponse);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des feux", e);
+        }
+
+        try {
+            // Désérialisation
+            return objectMapper.readValue(reponse, new TypeReference<List<Feu>>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la conversion en JSON", e);
+        }
+    }
+
+    public void desactivateFeu(int id) {
+        try {
+            restTemplate.put(apiUrl + "/close/" + id, String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la mise à jour des feux", e);
+        }
+    }
+
+    public void desactivateFeuEmergency(int id) {
+        try {
+            restTemplate.put(apiUrl2 + "/close/" + id, String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la mise à jour des feux", e);
         }
     }
 

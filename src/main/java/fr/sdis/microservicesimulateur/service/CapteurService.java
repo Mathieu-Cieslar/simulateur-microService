@@ -73,9 +73,15 @@ public class CapteurService {
 
         Feu feuRandom;
         //Création d'un feu avec des coordonnées aléatoires et une intensité aléatoire si la tailel de la liste feu est inferieur ou égal à 5
-        if(feux.size() <= 5){
-            feuRandom = feuService.createRandomFeu();
-            feux = feuClient.getFeux();
+        if(feux.size() < 1){
+            //Condition aléatoire pour créer un feu
+            if (Math.random() < 0.5) {
+                feuRandom = feuService.createRandomFeu();
+                feux = feuClient.getFeux();
+                feuClient.addFeu(feuRandom);
+            }else{
+                System.out.println("Pas de feu créééééééééééééééééé");
+            }
         }else{
             System.out.println("Il y a déjà 6 feux");
         }
@@ -83,73 +89,81 @@ public class CapteurService {
 
         List<Capteur> capteurs = capteurClient.getCapteurs();
 
-        for (Feu feu : feux) {
-            //Liste avec capteur et la distance entre le capteur et le feu
-            Map<Capteur, Double> myMap = new HashMap<>();
-            for (Capteur capteur : capteurs) {
-                //distance entre le capteur et le feu
-                double distance = distance(capteur.getCoorX(), capteur.getCoorY(), feu.getCoorX(), feu.getCoorY());
-                myMap.put(capteur, distance);
+        if(feux.size()<1){
+            for(Capteur capteur : capteurs){
+                capteur.setValeur(0);
             }
+        }else{
 
-            // Tri de la HashMap par valeurs (distance) en ordre décroissant
-            Map<Capteur, Double> sortedMap = myMap.entrySet()
-                    .stream()
-                    .sorted(Map.Entry.<Capteur, Double>comparingByValue(Comparator.naturalOrder()))
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (oldValue, newValue) -> oldValue,
-                            LinkedHashMap::new
-                    ));
+            for (Feu feu : feux) {
+                //Liste avec capteur et la distance entre le capteur et le feu
+                Map<Capteur, Double> myMap = new HashMap<>();
+                for (Capteur capteur : capteurs) {
+                    //distance entre le capteur et le feu
+                    double distance = distance(capteur.getCoorX(), capteur.getCoorY(), feu.getCoorX(), feu.getCoorY());
+                    myMap.put(capteur, distance);
+                }
 
-            //On crée une liste de capteurs proches du feu
-            List<Capteur> capteursProches = new ArrayList<>();
-            int index = 0;
-            System.out.println(feu);
-            for (Map.Entry<Capteur, Double> entry : sortedMap.entrySet()) {
-                Capteur capteur = entry.getKey();
-                Double distance = entry.getValue();
-                if(capteur.getValeur()==null){
-                    capteur.setValeur(0);
+                // Tri de la HashMap par valeurs (distance) en ordre décroissant
+                Map<Capteur, Double> sortedMap = myMap.entrySet()
+                        .stream()
+                        .sorted(Map.Entry.<Capteur, Double>comparingByValue(Comparator.naturalOrder()))
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (oldValue, newValue) -> oldValue,
+                                LinkedHashMap::new
+                        ));
+
+                //On crée une liste de capteurs proches du feu
+                List<Capteur> capteursProches = new ArrayList<>();
+                int index = 0;
+                System.out.println(feu);
+                for (Map.Entry<Capteur, Double> entry : sortedMap.entrySet()) {
+                    Capteur capteur = entry.getKey();
+                    Double distance = entry.getValue();
+                    if(capteur.getValeur()==null){
+                        capteur.setValeur(0);
+                    }
+                    if (index < 3) {
+                        System.out.println("Capteur : " + capteur + " Distance : " + distance);
+                        capteur.setValeur(9);
+                        capteursProches.add(capteur);
+                    } else if (distance < 5 & capteur.getValeur() < 8) {
+                        capteur.setValeur(8);
+                        capteursProches.add(capteur);
+                    } else if (distance < 6 & capteur.getValeur() < 7) {
+                        capteur.setValeur(7);
+                        capteursProches.add(capteur);
+                    } else if (distance < 7 & capteur.getValeur() < 6) {
+                        capteur.setValeur(6);
+                        capteursProches.add(capteur);
+                    } else if (distance < 8 & capteur.getValeur() < 5) {
+                        capteur.setValeur(5);
+                        capteursProches.add(capteur);
+                    } else if (distance < 9 & capteur.getValeur() < 4) {
+                        capteur.setValeur(4);
+                        capteursProches.add(capteur);
+                    } else if (distance < 10 & capteur.getValeur() < 3) {
+                        capteur.setValeur(3);
+                        capteursProches.add(capteur);
+                    } else if (distance < 11 & capteur.getValeur() < 2) {
+                        capteur.setValeur(2);
+                        capteursProches.add(capteur);
+                    } else if (distance < 12 & capteur.getValeur() < 1) {
+                        capteur.setValeur(1);
+                        capteursProches.add(capteur);
+                    } else {
+                        //capteur.setValeur(0);
+                        capteursProches.add(capteur);
+                    }
+                    index++;
                 }
-                if (index < 3) {
-                    System.out.println("Capteur : " + capteur + " Distance : " + distance);
-                    capteur.setValeur(9);
-                    capteursProches.add(capteur);
-                } else if (distance < 5 & capteur.getValeur() < 8) {
-                    capteur.setValeur(8);
-                    capteursProches.add(capteur);
-                } else if (distance < 6 & capteur.getValeur() < 7) {
-                    capteur.setValeur(7);
-                    capteursProches.add(capteur);
-                } else if (distance < 7 & capteur.getValeur() < 6) {
-                    capteur.setValeur(6);
-                    capteursProches.add(capteur);
-                } else if (distance < 8 & capteur.getValeur() < 5) {
-                    capteur.setValeur(5);
-                    capteursProches.add(capteur);
-                } else if (distance < 9 & capteur.getValeur() < 4) {
-                    capteur.setValeur(4);
-                    capteursProches.add(capteur);
-                } else if (distance < 10 & capteur.getValeur() < 3) {
-                    capteur.setValeur(3);
-                    capteursProches.add(capteur);
-                } else if (distance < 11 & capteur.getValeur() < 2) {
-                    capteur.setValeur(2);
-                    capteursProches.add(capteur);
-                } else if (distance < 12 & capteur.getValeur() < 1) {
-                    capteur.setValeur(1);
-                    capteursProches.add(capteur);
-                } else {
-                    //capteur.setValeur(0);
-                    capteursProches.add(capteur);
-                }
-                index++;
             }
         }
 
         capteurClient.setCapteurs(capteurs);
+        System.out.println("Capteurs mis à jour");
 
     }
 }

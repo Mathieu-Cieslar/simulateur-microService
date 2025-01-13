@@ -10,5 +10,5 @@ public class Feu {
     private Double coorX;
     private Double coorY;
     private int intensite;
-    private List<Intervention> Interventions;
+    private boolean status;
 }
