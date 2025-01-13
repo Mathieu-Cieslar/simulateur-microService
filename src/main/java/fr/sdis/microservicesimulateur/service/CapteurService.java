@@ -129,7 +129,7 @@ public class CapteurService {
                     if(capteur.getValeur()==null){
                         capteur.setValeur(0);
                     }
-                    if (index < 3) {
+                    if (index < 1) {
                         System.out.println("Capteur : " + capteur + " Distance : " + distance);
                         capteur.setValeur(9);
                         capteursProches.add(capteur);
